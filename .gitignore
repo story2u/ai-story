@@ -1,0 +1,15 @@
+# 会话恢复脚本（环境生成，与项目无关）
+run.sh
+
+# 大模型与构建产物
+*.log
+.DS_Store
+__pycache__/
+*.pyc
+
+# 临时演绎缓存（如需保留改为不忽略）
+transcripts/**/*.tmp.md
+context_packs/**/*.tmp.md
+
+# 不忽略骨架占位
+!**/.gitkeep
