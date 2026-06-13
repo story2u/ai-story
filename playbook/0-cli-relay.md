@@ -37,17 +37,17 @@
 
 | 模型 | CLI | 职能角色(需读仓库) | 演员(禁读任何文件) |
 |---|---|---|---|
-| GPT | `codex` | `codex exec --sandbox read-only -o $P/out.md "$(cat $P/prompt.md)"` (cwd=仓库根) | `codex exec --cd $P --sandbox read-only --skip-git-repo-check -o $P/out.md "$(cat $P/prompt.md)"` |
+| GPT | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex` | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --sandbox read-only --output-last-message $P/out.md "$(cat $P/prompt.md)"` (cwd=仓库根) | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --cd $P --sandbox read-only --skip-git-repo-check --output-last-message $P/out.md "$(cat $P/prompt.md)"` |
 | DeepSeek | `opencode` | `opencode run -m deepseek/deepseek-chat "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && opencode run -m deepseek/deepseek-chat "$(cat prompt.md)" > out.md)` |
-| Kiro | Kiro / 本机通道 | 职能任务:Kiro 干净新会话粘贴;如本机 CLI 可用则按实际命令把 prompt 写入 `$P/out.md` | 演员候选,规则同 Gemini 行 |
-| Gemini | Antigravity / `gemini` | 职能候选:Antigravity 干净新会话粘贴 | **首选:Antigravity 干净新会话粘贴**(不挂载仓库,见 AGENTS.md「IDE 型」);备用:`(cd $P && gemini -p "$(cat prompt.md)" > out.md)`(CLI 以本机为准) |
-| Cursor | Cursor / `cursor-agent` | 总编/发布自检员:Cursor 打开仓库**只读**粘贴任务,或 `cursor-agent -p`(以本机为准) | 演员候选,规则同 Gemini 行 |
-| Ollama | `ollama` | `ollama run <本机模型> "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && ollama run <本机模型> "$(cat prompt.md)" > out.md)` |
+| Kiro | `kiro-cli` | `kiro-cli chat --no-interactive "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && kiro-cli chat --no-interactive "$(cat prompt.md)" > out.md)` |
+| Antigravity | `agy` | `agy --model "GPT-OSS 120B (Medium)" -p "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && agy --model "GPT-OSS 120B (Medium)" -p "$(cat prompt.md)" > out.md)` |
+| Cursor | Cursor / `cursor-agent` | 总编/发布自检员:Cursor 打开仓库**只读**粘贴任务,或 `cursor-agent -p`(以本机为准) | 演员候选,规则同 Antigravity 行 |
+| Ollama | `ollama` | **当前弃用**:`kimi-k2.6:cloud` 实测返回 403 subscription required;账号权限恢复前不调度 | **当前弃用** |
 | Claude | `claude` | **冻结不启用**;解除冻结后才可加回 `claude -p "$(cat $P/prompt.md)" > $P/out.md` | **冻结不启用** |
 
 无 CLI 的粘贴棒:作者把 `$P/prompt.md` 全文粘入该工具**全新会话**,输出存回 `$P/out.md`(或贴回 Showrunner 落盘),账本计 `方式A`。
 
-- 模型号以本机为准:`opencode models`、`codex exec --help`、`gemini --help`、`cursor-agent --help`、`ollama list`;在 cast.md 改,此表不动。
+- 模型号以本机为准:`opencode models`、`/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --help`、`kiro-cli chat --list-models`、`agy models`、`cursor-agent --help`;在 cast.md 改,此表不动。
 - codex 的进度流走 stderr、最终消息走 stdout/`-o`,正好只取交付物。
 - 所有 CLI 都按"单次调用"使用;**不要**用 resume/session 续聊(会引入会话态,破坏不变式 2)。
 - Claude 冻结期任何 `claude -p` 调用都应视为误调度;若必须启用,先由作者解除冻结并同步 `cast.md` / `CLAUDE.md` / 接力板。
@@ -110,7 +110,7 @@
 - **每个落盘产物**末尾盖戳:`created_by: <角色>@<模型> via <cli> · <run-id>`
   (例:`created_by: prose-writer@deepseek via opencode · ch-0003-prose.r1`)。stand-in 时如实标注。
 - **章文件"流水线状态"**新增一行调度账本:
-  `调度: { dispatch: 23, codex: 8, deepseek: 6, kiro: 2, antigravity: 3, cursor: 2, ollama: 2, claude: 0, retry: 2, 方式A: 3, stand_in: 0 }`
+  `调度: { dispatch: 23, codex: 8, deepseek: 6, kiro: 2, antigravity: 3, cursor: 2, claude: 0, retry: 2, 方式A: 3, stand_in: 0 }`
 - 发布前过 `checklists/pre-publish.md` **I 组(跨模型痕迹审计)**:戳与 cast.md 一致、maker≠checker、
   stand_in=0(非 0 需作者签字)。
 
@@ -118,12 +118,13 @@
 
 给本章会用到的 CLI 各发一条 10 字以内的自报家门任务,确认通道可用再开演:
 ```bash
-codex exec --sandbox read-only "回答:OK-codex"
+/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --sandbox read-only "回答:OK-codex"
 opencode run -m deepseek/deepseek-chat "回答:OK-deepseek"
-gemini -p "回答:OK-gemini"          # 仅在本章用 gemini CLI 时
-ollama run <本机模型> "回答:OK-ollama" # 仅在本章用 ollama 时
+kiro-cli chat --no-interactive "回答:OK-kiro"
+agy --model "GPT-OSS 120B (Medium)" -p "回答:OK-agy"
 ```
-Kiro / Antigravity / Cursor 等粘贴通道用全新会话粘一条 `回答:OK-<通道>` 做人工冒烟,输出记入 `relay/smoke/` 或接力板。
+Cursor 等粘贴通道用全新会话粘一条 `回答:OK-<通道>` 做人工冒烟,输出记入 `relay/smoke/` 或接力板。
+Ollama 当前不用;若作者恢复 `kimi-k2.6:cloud` 订阅权限,重测通过后再写回 cast/接力板。
 Claude 不做默认冒烟;解除冻结前不测试、不调度。
 任一必需通道不通 → 先修通道或按 §4 决定降级,不要带病开演。
 
