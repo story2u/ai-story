@@ -3,11 +3,11 @@
 > 把每个角色指派给一个模型。**换模型只改这张表,不动 `roles/` 角色卡、不动任何文档。**
 > 运行方式 M(当前,作者拍板):Showrunner 组 prompt/校验/落盘/记账,**作者在 Mac 手动执行命令或粘贴**,
 > 协议见 `playbook/0-cli-relay.md` + `relay/HANDOFF.md`(接力板)。
-> 当前编组(ad-2026-06-13-02):Codex 主控;DeepSeek 主创;Kiro / Antigravity / Cursor 共创;
+> 当前编组(ad-2026-06-13-03):Codex 主控;DeepSeek 主创;Kiro / Antigravity / Cursor / Ollama 共创;
 > Claude 保留主创候补身份,但**冻结不启用**。
 > 本机通道:Codex 主会话(Showrunner)| `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex`(GPT,OAuth)|
 > `opencode`(DeepSeek,api-key)| `kiro-cli chat --no-interactive`(Kiro)| `agy -p`(Antigravity)|
-> Cursor App(粘贴/以本机配置为准)| `ollama`(已评估弃用)| `claude`(冻结;作者解除冻结前不调度)。
+> Cursor App(粘贴/以本机配置为准)| `ollama run --think=false --hidethinking minimax-m3:cloud`| `claude`(冻结;作者解除冻结前不调度)。
 
 ## 总控
 
@@ -24,13 +24,13 @@
 | 总编 | `roles/editor.md` | Cursor | Cursor 干净新会话粘贴 / `cursor-agent` CLI(以本机为准) | 与正文 maker(DeepSeek)、核对(GPT)异模型;承担终审与跨模型痕迹审计 |
 | 连续性检查器 | `roles/continuity-checker.md` | GPT | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --sandbox read-only --output-last-message $P/out.md "$(cat $P/prompt.md)"` | 机械核对;与正文 maker 异模型 |
 | 小说输出器 | `roles/prose-writer.md` | DeepSeek | `opencode run -m deepseek/deepseek-chat` | 中文文采 |
-| 记忆管理员 | `roles/memory-manager.md` | Kiro | `kiro-cli chat --no-interactive "$(cat $P/prompt.md)" > $P/out.md` | 结构化维护;认知包仍受 GPT 隔离审计(异模型)。Ollama 云模型当前不用 |
+| 记忆管理员 | `roles/memory-manager.md` | Ollama(MiniMax M3) | `ollama run --think=false --hidethinking minimax-m3:cloud "$(cat $P/prompt.md)" > $P/out.md` | 结构化维护;认知包仍受 GPT 隔离审计(异模型)。Kiro 为备用 |
 | 发布自检员(轻量·新) | `checklists/pre-publish.md` 即任务卡 | Cursor(以本机配置为准) | Cursor 干净新会话粘贴 / `cursor-agent` CLI(以本机为准) | I 组跨模型痕迹审计由独立通道核查;每章一次,轻量 |
 
-> 模型号/CLI 以本机实际为准:`opencode models`、`/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --help`、`kiro-cli chat --list-models`、`agy models`、`cursor-agent --help`。
+> 模型号/CLI 以本机实际为准:`opencode models`、`/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --help`、`kiro-cli chat --list-models`、`agy models`、`ollama list`、`cursor-agent --help`。
 > 备用降级(限额/故障时):各模型网页/App 粘贴(方式A);详见 playbook/0 §4。
 > Claude 冻结期不作为默认备用或 stand-in;只有作者明确解除冻结并更新本表/接力板后才可调度。
-> Ollama 评估(2026-06-13):`ollama run kimi-k2.6:cloud` 返回 403 subscription required,不作为默认通道。
+> Ollama 评估(2026-06-13):`kimi-k2.6:cloud` 返回 403 subscription required;`minimax-m3:cloud` 约 2.45s 冒烟成功。调用时必须加 `--think=false --hidethinking`。
 
 ## 角色演员(零上帝视角;prompt 即全部世界,禁读文件禁用工具)
 
@@ -41,7 +41,7 @@
 | 反派·柯九 | `ke-jiu` | `roles/character-actor.md` | **Antigravity(GPT-OSS 120B)** | `(cd $P && agy --model "GPT-OSS 120B (Medium)" -p "$(cat prompt.md)" > out.md)` | 和气健谈、藏钩子;自 Claude 改派;Gemini 已卸载不再使用 |
 
 三家演员(GPT/DeepSeek/Antigravity)=天然声音差异,全异模型。新角色入册时在此表加行,按声线配模型
-(Kiro/Antigravity/Cursor 可作新演员或职能通道候选;Claude 冻结期不入候选池;Ollama 当前不用)。
+(Kiro/Antigravity/Cursor/Ollama 可作新演员或职能通道候选;Claude 冻结期不入候选池)。
 
 ## 冻结候补
 
@@ -56,8 +56,8 @@
 | 正文 `drafts/` | DeepSeek(输出器) | GPT(机械核对)→ Cursor(总编) ✓ |
 | 场记 `transcripts/` | 三家演员(GPT/DeepSeek/Antigravity) | GPT(场景验收)+ Cursor(总编抽检) |
 | 章纲/brief `story/` | GPT(导演) / Kiro(架构师) | Cursor(总编) ✓ |
-| 认知包 `context_packs/` | Kiro(记忆) | GPT(场景验收的隔离审计) ✓ 异模型 |
-| 记忆补丁 `memory/` | Kiro(记忆) | Codex Showrunner 回读校验;存疑时改派 GPT 抽查或作者人工 |
+| 认知包 `context_packs/` | Ollama/MiniMax(记忆) | GPT(场景验收的隔离审计) ✓ 异模型 |
+| 记忆补丁 `memory/` | Ollama/MiniMax(记忆) | Codex Showrunner 回读校验;存疑时改派 GPT 抽查或作者人工 |
 | 发布前自检 | Codex Showrunner 自查 | **Cursor(发布自检员)复核** ✓ 独立通道 |
 
 > Codex 是主控而非 maker/checker;若某一步产物由 `codex exec` 生成,其 checker 不得再用 GPT/Codex 通道。
@@ -79,4 +79,4 @@
 - 换:改本表"模型"与"调用"两列即可,下次调度即生效。人设与记忆在文档里,连续性不丢。
 - 加:在 playbook/0 §2 加一行命令模板(无 CLI 的 IDE 型 agent 走"干净新会话粘贴"),在本表选角即可。
 
-created_by: showrunner@codex via codex-main · cast-r5(ad-2026-06-13-02)
+created_by: showrunner@codex via codex-main · cast-r6(ad-2026-06-13-03)
