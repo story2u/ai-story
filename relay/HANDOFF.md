@@ -2,9 +2,9 @@
 
 > **本板是 Showrunner 独占维护的唯一进度看板。**
 > 当前作者指令(2026-06-13): Claude 额度用完，先冻结 Claude；由 Codex 当 Showrunner 主控，DeepSeek 当主创；
-> Kiro / Antigravity / Cursor / Ollama 尽量参与共创。CLAUDE 保留主创角色但暂不启用。
+> Kiro / Antigravity / Cursor Agent / Ollama 尽量参与共创。CLAUDE 保留主创角色但暂不启用。
 > 作者更新(2026-06-13):Codex CLI 固定使用 `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex`;
-> Antigravity CLI 为 `agy`;Kiro CLI 为 `kiro-cli`;Gemini 已卸载不再使用;Ollama 改用 `minimax-m3:cloud`。
+> Antigravity CLI 为 `agy`;Kiro CLI 为 `kiro-cli`;Cursor Agent CLI 为 `agent`;Gemini 已卸载不再使用;Ollama 改用 `minimax-m3:cloud`。
 > NVIDIA API 已接入为 DeepSeek 备用通道:`deepseek-ai/deepseek-v4-flash`。
 
 ## 当前通道实测
@@ -14,7 +14,7 @@
 - NVIDIA API: `deepseek-ai/deepseek-v4-flash` 可用；`NVIDIA_API_KEY` 在 `.zshrc`,需 `zsh -ic` 读取；high thinking 冒烟成功但约 60s,仅作备用/高推理通道。
 - Antigravity: `agy -p` 可用；`agy --model "GPT-OSS 120B (Medium)" -p` 冒烟成功(约 7.2s)。Gemini 已卸载,后续不再使用。
 - Kiro: `kiro-cli chat --no-interactive` 可用，冒烟成功(约 7.0s)；`kiro` 编辑器入口不作为接力命令。
-- Cursor: Cursor.app 存在；`cursor-agent` / `cursor` 当前不在 PATH，暂不能命令棒调用。
+- Cursor Agent: `/Users/bruce/.local/bin/agent` 可用；`agent -p --mode=ask --trust` 冒烟成功，输出 `OK-cursor-agent`；用于非交互只读评审/发布自检，禁止 resume/continue 引入会话态。
 - Ollama: `kimi-k2.6:cloud` 实测约 6.1s 返回 `403 Forbidden: this model requires a subscription`，弃用；`ollama run --think=false --hidethinking minimax-m3:cloud` 冒烟成功，输出干净，约 2.45s，可用于记忆/结构化任务。
 - Claude: 保留在 cast 里，但当前冻结，不调度。
 
@@ -23,17 +23,17 @@
 | 项 | 值 |
 |---|---|
 | 章节 | ch-0001《至贱命格》(黄金五章版) |
-| 当前节点 | **P3 — sc-0001-03〈夜半反痕〉认知包** |
-| 前置状态 | sc-0001-01 已 pass；sc-0001-02 已 pass 并更新 `memory/working/ch-0001.md` |
-| 下一棒角色 | 记忆管理员（Ollama/MiniMax M3；必要时 Kiro 备用） |
-| 下一 run-id | `relay/ch-0001/sc-0001-03-packs.r1/` |
-| 目标产物 | 为 sc-0001-03 出场角色编私有认知包；必须带入旧砚暂留、三日复核、不得离镇、柯九深查等工作态后果，但不得预写夜间异痕事件脚本 |
+| 当前节点 | **ch-0001 complete / next: ch-0002 P1 认知包** |
+| 前置状态 | ch-0001 正文完成；连续性 pass(r2)；总编 pass(r2)；memory patch verified；发布前自检 pass(r2)；`memory/working/ch-0001.md` 已删除 |
+| 下一棒角色 | 记忆管理员（Ollama/MiniMax M3；若再卡顿则 Kiro 备用） |
+| 下一 run-id | `relay/ch-0002/sc-0002-01-packs.r1/` |
+| 目标产物 | 为 ch-0002 首场编私有认知包；必须基于正式 `memory/`，不要读取已删除的 ch-0001 工作态 |
 
 ## 下一步
 
-1. 组装 P3 认知包 prompt：输入 `roles/memory-manager.md`、`story/scenes/sc-0001-03.md`、`memory/working/ch-0001.md`、必要的 `memory/*.md` 摘要。
-2. 重点隔离：沈砚知道旧砚暂留但三日复核、对柯九更警惕；柯九知道沈砚/旧砚/旧契值得深查。演员认知包不得写“夜间会出现暗痕”的事件脚本。
-3. 认知包经 Showrunner 审核后进入 B3 演绎。
+1. 提交并推送 ch-0001 完成态。
+2. 下一章从 `story/chapters/ch-0002.md` 与 `story/scenes/sc-0002-01.md` 进入 P1 认知包。
+3. ch-0002 编包输入使用正式 `memory/*.md`；不得再引用 `memory/working/ch-0001.md`。
 
 ## ch-0001 节点图
 
@@ -48,14 +48,14 @@
 | P2 | sc-0001-02 认知包 | memory-manager@ollama(历史)/deepseek stand-in | `sc-0001-02-packs.r1` | ✅ done：Ollama 超时；DeepSeek r3 accepted |
 | B2 | sc-0001-02 演绎 | 沈砚@gpt/deepseek stand-in / 柯九@antigravity 或 deepseek stand-in | `sc-0001-02-b*` | ✅ done，7 beats，L0✅ |
 | C2/W2 | sc-0001-02 验收+工作态 | checker+memory | `sc-0001-02-check/working` | ✅ pass(r1)，working-updated |
-| P3~W3 | sc-0001-03 夜半反痕 | 多 agent | `sc-0001-03-*` | ▶️ P3 next |
-| Z1 | 正文生成 | prose-writer@deepseek | `ch-0001-prose.r1` | pending |
-| Z2~Z5 | 连续性/终审/记忆/发布前自检 | GPT/非同模评审/Cursor候选 | `ch-0001-*` | pending |
+| P3~W3 | sc-0001-03 夜半反痕 | 多 agent | `sc-0001-03-*` | ✅ pass(r1)，working-updated→正式记忆 |
+| Z1 | 正文生成 | prose-writer@deepseek | `ch-0001-prose.r1/r2` | ✅ done，r2 accepted |
+| Z2~Z5 | 连续性/终审/记忆/发布前自检 | Kiro/Cursor/Kiro/Cursor | `ch-0001-*` | ✅ continuity pass(r2)，editorial pass(r2)，memory verified，pre-publish pass(r2) |
 
 ## 账本镜像
 
 ```
-调度: { dispatch: 37, claude: 2, codex: 8, deepseek: 9, nvidia: 1, antigravity: 3, kiro: 3, gemini: 2, cursor: 0, ollama: 10, retry: 6, 方式A: 1, 手动CLI: 31, 兼任: 1, stand_in: 4, 作废: 7 }
+调度: { dispatch: 58, claude: 2, codex: 11, deepseek: 13, nvidia: 1, antigravity: 4, kiro: 7, gemini: 2, cursor: 4, ollama: 16, retry: 9, 方式A: 1, 手动CLI: 52, 兼任: 1, stand_in: 4, 作废: 7 }
 ```
 
 ## 最近历史
@@ -74,6 +74,11 @@
 - 2026-06-13 B2.4 沈砚@Codex 完成：回应柯九追问，以七年拓碑/跑腿经手旧契房解释熟悉来源，并给出可查但未定案的年头/名目；b01-b04 经 Kiro/GLM L0 抽检 pass。下一棒 B2.5。
 - 2026-06-13 B2.5 looping engineering 完成：Kiro 给旧契房程序微裁决，DeepSeek 生成世界拍，Ollama/MiniMax L0 pass；经手簿与乙库残卷出现可查线索，但旧具来历仍不闭环、旧砚暂记待验。下一棒 B2.6 柯九。
 - 2026-06-13 B2.6 柯九@Antigravity 完成：从“旧具随工交接/来历栏空白”切入，旁敲侧击追问交接者名号；Ollama/MiniMax L0 pass。下一棒 B2.7 世界拍收束。
-- 2026-06-13 B2.7/C2/W2 完成：DeepSeek 世界拍收束旧契房程序，旧砚暂归沈砚照管但三日复核、不得离身外借、不得擅离青槐镇；Ollama L0 pass，Kiro/GLM 场景验收 pass，Ollama 工作态已并入 `memory/working/ch-0001.md`。下一棒 P3。
+- 2026-06-13 B2.7/C2/W2 完成：DeepSeek 世界拍收束旧契房程序，旧砚暂归沈砚照管但三日复核、不得离身外借、不得擅离碑亭镇；Ollama L0 pass，Kiro/GLM 场景验收 pass，Ollama 工作态已并入 `memory/working/ch-0001.md`。下一棒 P3。
+- 2026-06-13 sc-0001-03 完成：Ollama 编认知包；Codex/DeepSeek/Antigravity 演绎 6 拍；Ollama L0 pass；Kiro/GLM L1 pass；Ollama 工作态并入。
+- 2026-06-13 ch-0001 正文完成：DeepSeek prose r1 经 Showrunner 追溯发现未登记 NPC 私名、旧砚位置链与三日复核错字，r2 修正落 `drafts/ch-0001.md`。
+- 2026-06-13 ch-0001 审核完成：Kiro 连续性 r1 pass；Cursor Agent 总编 r1 因“青槐镇”地名 revise；事实源统一为“碑亭镇”后 Kiro r2 pass、Cursor Agent r2 pass。
+- 2026-06-13 ch-0001 记忆落库完成：Ollama memory patch 通道卡顿中止；Kiro 备用生成 patch，经 Showrunner 审阅修正后应用，L3 回读 verified，`memory/working/ch-0001.md` 删除。
+- 2026-06-13 ch-0001 发布前自检 r2 pass：补齐正文与 memory patch provenance 戳，Cursor Agent I 组复审通过，第一章可提交发布。
 
 created_by: showrunner@codex via codex-main · handoff-board

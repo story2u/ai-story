@@ -11,7 +11,7 @@
 - **Showrunner 主控：Codex 交互式主会话。** Codex 只做组装上下文、接力调度、守闸门、落盘归档；不演角色、不写正文。
   创作演绎一律采用 **Looping Engineering**：每个推进单元都按“maker 生成 → checker/闸门验证 → 失败则落 revision-brief 回环 → 通过才落盘记账”的小循环执行，不把任何模型的一次输出直接当成最终事实。
 - **主创 / 正文主力：DeepSeek。** 小说输出器与创作型任务优先调度 DeepSeek，具体角色仍以 `cast.md` 为准；NVIDIA API 的 `deepseek-ai/deepseek-v4-flash` 可作高推理备用通道。
-- **共创通道：Kiro / Antigravity / Cursor / Ollama。** 按 `cast.md` 与 `relay/HANDOFF.md` 分配任务；每一棒必须是干净上下文或单次调用。
+- **共创通道：Kiro / Antigravity / Cursor Agent / Ollama。** 按 `cast.md` 与 `relay/HANDOFF.md` 分配任务；每一棒必须是干净上下文或单次调用。
 - **Ollama：使用 `minimax-m3:cloud`。** `kimi-k2.6:cloud` 返回订阅限制，已弃用；`minimax-m3:cloud` 冒烟通过，调用时加 `--think=false --hidethinking`。
 - **Claude：保留主创角色，但当前不启用。** 除非作者明确解除冻结并同步 `cast.md` / 接力板，不调用 `claude -p`，也不把 Claude 主会话当总控。
 - 若旧文档仍写着"Claude 主会话兼任"或"Claude 总控"，视为已暂停的历史规则；后续运行以本段、最新 `cast.md` 与接力板为准。
@@ -22,7 +22,7 @@
 
 ### 模式 B · 你被一次性调用来扮演某个具体角色（最常见）
 
-如果你是被 `codex exec` / `opencode run` / NVIDIA OpenAI-compatible API / `agy -p` / `kiro-cli chat --no-interactive` / `ollama run --think=false --hidethinking minimax-m3:cloud` / `claude -p` **非交互单次调用**启动的，
+如果你是被 `codex exec` / `opencode run` / NVIDIA OpenAI-compatible API / `agy -p` / `kiro-cli chat --no-interactive` / `agent -p` / `ollama run --think=false --hidethinking minimax-m3:cloud` / `claude -p` **非交互单次调用**启动的，
 或者用户把一段以角色卡开头的 prompt **粘贴进你的全新会话**（IDE 型 agent 常用此法）：
 **这条消息（prompt）就是你的全部上下文与全部任务**，开头是你的角色卡。照角色卡输出交付物，一次给全。
 - **只输出交付物本体**（markdown），不要寒暄、不要复述任务。
@@ -32,9 +32,9 @@
 - **职能角色**（导演/总编/连续性/输出器/记忆/架构师）：可以**只读** prompt 里"输入文件"清单列出的路径，
   此外一个文件都不要碰。评审类角色**只评不改**——给证据与改法方向，不代写内容。
 
-#### IDE / 本地型 agent（Kiro / Antigravity / Cursor / Ollama）补充规矩
+#### IDE / 本地型 agent（Kiro / Antigravity / Cursor Agent / Ollama）补充规矩
 
-你们通常以"用户粘贴 prompt 到新会话"的方式被调度；本机已确认 `kiro-cli chat --no-interactive`、`agy -p`、`ollama run --think=false --hidethinking minimax-m3:cloud` 可走 CLI：
+你们通常以"用户粘贴 prompt 到新会话"的方式被调度；本机已确认 `kiro-cli chat --no-interactive`、`agy -p`、`agent -p`、`ollama run --think=false --hidethinking minimax-m3:cloud` 可走 CLI：
 
 1. **每一棒都开全新会话**——绝不在旧会话里续演（无状态是本 harness 的不变式）。
 2. **演员棒**：会话**不得挂载/打开本仓库**（空工作区或无关目录）。prompt 即你的全部世界；

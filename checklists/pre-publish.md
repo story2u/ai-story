@@ -46,7 +46,7 @@
 ## I. 跨模型痕迹审计（playbook/0 · 防"单模型代演"回潮）
 - [ ] 本章关键产物（章纲/场记各拍/正文/两份审报/认知包/patch）都有 `created_by: <角色>@<模型> via <cli> · <run-id>` 戳，
       且与 `cast.md` 选角一致；`relay/<ch>/` 下能找到对应 run 留痕。
-- [ ] **maker ≠ checker（异模型）**：正文(DeepSeek)→机械核对(GPT)→终审(Claude)；场记(演员)→验收(GPT)。对照 cast.md 矩阵逐条核。
+- [ ] **maker ≠ checker（异模型）**：正文(DeepSeek)→机械核对(Kiro/GPT 等非 DeepSeek)→终审(Cursor Agent)；场记(演员/世界拍)→验收(与 maker 异模型)。对照 cast.md 矩阵逐条核。
 - [ ] 调度账本已记入章文件"流水线状态"；`stand_in = 0`，或每次 stand-in 都有"用户当场批准"的记录＋作者签字放行。
 - [ ] 没有任何评审产物出自"与被审产物 maker 同模型"的 stand-in。
 - [ ] 演员各 run 的 prompt 抽查 2 个：不含仓库路径、不含他人 INNER/认知包、不含该角色不在场的拍。

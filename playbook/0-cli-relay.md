@@ -42,13 +42,13 @@
 | DeepSeek/NVIDIA | NVIDIA API | 见下方「NVIDIA API 模板」 | 同职能模板；演员慎用,需确认不把 reasoning 并入正式输出 |
 | Kiro | `kiro-cli` | `kiro-cli chat --no-interactive "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && kiro-cli chat --no-interactive "$(cat prompt.md)" > out.md)` |
 | Antigravity | `agy` | `agy --model "GPT-OSS 120B (Medium)" -p "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && agy --model "GPT-OSS 120B (Medium)" -p "$(cat prompt.md)" > out.md)` |
-| Cursor | Cursor / `cursor-agent` | 总编/发布自检员:Cursor 打开仓库**只读**粘贴任务,或 `cursor-agent -p`(以本机为准) | 演员候选,规则同 Antigravity 行 |
+| Cursor Agent | `agent` | `agent -p --mode=ask --trust "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根；prompt 必须声明只读/只评不改) | `(cd $P && agent -p --mode=ask --trust "$(cat prompt.md)" > out.md)`；演员棒仍须空 run 目录、prompt 即全部世界 |
 | Ollama | `ollama` | `ollama run --think=false --hidethinking minimax-m3:cloud "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && ollama run --think=false --hidethinking minimax-m3:cloud "$(cat prompt.md)" > out.md)` |
 | Claude | `claude` | **冻结不启用**;解除冻结后才可加回 `claude -p "$(cat $P/prompt.md)" > $P/out.md` | **冻结不启用** |
 
 无 CLI 的粘贴棒:作者把 `$P/prompt.md` 全文粘入该工具**全新会话**,输出存回 `$P/out.md`(或贴回 Showrunner 落盘),账本计 `方式A`。
 
-- 模型号以本机为准:`opencode models`、`/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --help`、`kiro-cli chat --list-models`、`agy models`、`ollama list`、`cursor-agent --help`;在 cast.md 改,此表不动。
+- 模型号以本机为准:`opencode models`、`/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --help`、`kiro-cli chat --list-models`、`agy models`、`ollama list`、`agent --help`、`agent models`;在 cast.md 改,此表不动。
 - NVIDIA API 使用 OpenAI-compatible Chat Completions；`NVIDIA_API_KEY` 位于 `.zshrc`,非交互调度要用 `zsh -ic` 或显式 source。正式产物只取 `message.content`；`reasoning` / `reasoning_content` 不写入 `out.md`。
 - codex 的进度流走 stderr、最终消息走 stdout/`-o`,正好只取交付物。
 - 所有 CLI 都按"单次调用"使用;**不要**用 resume/session 续聊(会引入会话态,破坏不变式 2)。
@@ -141,8 +141,9 @@ zsh -ic 'curl -sS https://integrate.api.nvidia.com/v1/chat/completions -H "Autho
 kiro-cli chat --no-interactive "回答:OK-kiro"
 agy --model "GPT-OSS 120B (Medium)" -p "回答:OK-agy"
 ollama run --think=false --hidethinking minimax-m3:cloud "回答:OK-ollama"
+agent -p --mode=ask --trust "回答:OK-cursor-agent"
 ```
-Cursor 等粘贴通道用全新会话粘一条 `回答:OK-<通道>` 做人工冒烟,输出记入 `relay/smoke/` 或接力板。
+无 CLI 的粘贴通道用全新会话粘一条 `回答:OK-<通道>` 做人工冒烟,输出记入 `relay/smoke/` 或接力板。
 Ollama 默认使用 `minimax-m3:cloud`;`kimi-k2.6:cloud` 已因订阅限制弃用。
 Claude 不做默认冒烟;解除冻结前不测试、不调度。
 任一必需通道不通 → 先修通道或按 §4 决定降级,不要带病开演。
