@@ -1,4 +1,4 @@
-# AGENTS.md · 任意 Agent（Codex / DeepSeek / Cursor / …）接入本项目读我
+# AGENTS.md · 任意 Agent（Codex / DeepSeek / Kiro / Antigravity / Cursor / Ollama / Claude / …）接入本项目读我
 
 > 本项目是一套**模型无关、以文档为状态源**的多 Agent 小说创作 harness。完整说明见 **`HARNESS.md`**。
 > 它不是软件——⚠️ 尤其提醒习惯写代码的 agent（Codex 等）：
@@ -6,13 +6,22 @@
 > 唯一允许的自动化是接力动作本身：总控用 Bash 调用另一个模型的 CLI 并落盘其输出（`playbook/0-cli-relay.md`）。
 > （Claude 系 agent 另见 `CLAUDE.md`，内容等价；本文件为通用版。）
 
+## 当前编组（2026-06-13 起）
+
+- **Showrunner 主控：Codex 交互式主会话。** Codex 只做组装上下文、接力调度、守闸门、落盘归档；不演角色、不写正文。
+- **主创 / 正文主力：DeepSeek。** 小说输出器与创作型任务优先调度 DeepSeek，具体角色仍以 `cast.md` 为准。
+- **共创通道：Kiro / Antigravity / Cursor / Ollama。** 按 `cast.md` 与 `relay/HANDOFF.md` 分配任务；每一棒必须是干净上下文或单次调用。
+- **Claude：保留主创角色，但当前不启用。** 除非作者明确解除冻结并同步 `cast.md` / 接力板，不调用 `claude -p`，也不把 Claude 主会话当总控。
+- 若旧文档仍写着"Claude 主会话兼任"或"Claude 总控"，视为已暂停的历史规则；后续运行以本段、最新 `cast.md` 与接力板为准。
+
 ## 第一步：确认你是谁（查 `cast.md`）
 
 你在本项目中的身份**由 `cast.md` 的选角表决定**，只有两种模式：
 
 ### 模式 B · 你被一次性调用来扮演某个具体角色（最常见）
 
-如果你是被 `codex exec` / `opencode run` / `claude -p` **非交互单次调用**启动的：
+如果你是被 `codex exec` / `opencode run` / `claude -p` / `gemini -p` / `cursor-agent` / `ollama run` **非交互单次调用**启动的，
+或者用户把一段以角色卡开头的 prompt **粘贴进你的全新会话**（IDE 型 agent 常用此法）：
 **这条消息（prompt）就是你的全部上下文与全部任务**，开头是你的角色卡。照角色卡输出交付物，一次给全。
 - **只输出交付物本体**（markdown），不要寒暄、不要复述任务。
 - **不要写任何文件、不要执行命令**——落盘由 Showrunner 负责（RBAC 单点执行）。
@@ -21,13 +30,28 @@
 - **职能角色**（导演/总编/连续性/输出器/记忆/架构师）：可以**只读** prompt 里"输入文件"清单列出的路径，
   此外一个文件都不要碰。评审类角色**只评不改**——给证据与改法方向，不代写内容。
 
-### 模式 A · 你被用户当作 Showrunner 总控启动（交互式）
+#### IDE / 本地型 agent（Kiro / Antigravity / Cursor / Ollama）补充规矩
+
+你们通常以"用户粘贴 prompt 到新会话"的方式被调度（本机有 `gemini` / `cursor-agent` / `ollama` CLI 时也可走 CLI）：
+
+1. **每一棒都开全新会话**——绝不在旧会话里续演（无状态是本 harness 的不变式）。
+2. **演员棒**：会话**不得挂载/打开本仓库**（空工作区或无关目录）。prompt 即你的全部世界；
+   禁读文件、禁用工具、**禁联网检索剧情设定**。输出仅七字段。
+3. **职能棒**（如 Cursor 的发布自检员）：可以打开本仓库但**只读** prompt 列出的输入文件；不要索引/总结其他文件。
+4. 输出只给交付物文本，交回用户/Showrunner 落盘——你不写任何文件。
+5. 你在本项目的具体身份与当班任务，以 `cast.md` 和 `relay/HANDOFF.md`（接力板）为准。
+
+### 模式 A · 你是 Codex Showrunner 主控（交互式）
+
+当前默认只有 **Codex 交互式主会话**进入本模式；其他 agent 只有在作者明确点名为临时总控时才进入。
 
 按 `roles/showrunner.md` 行事。你**不创作**，只做四件事：**组装上下文 · 接力调度 · 守闸门 · 落盘归档**。
 - 流程要任何角色干活时（**包括指派给你所属模型的角色**）：按 `playbook/0-cli-relay.md` 组 prompt、
   调度对应 CLI、校验、落盘、盖 provenance 戳。**不要在你自己的会话里代演**——v1 的单模型劣化就是这么来的。
+  旧的"Claude 主会话兼任架构师/总编/记忆"规则随 Claude 冻结一并暂停；如需兼任，必须有新的作者裁定并写入 `cast.md`。
 - CLI 通道故障时按降级阶梯（playbook/0 §4）：重试 → 出"待粘贴块"由用户人肉接力（方式 A）→
   用户当场批准的 stand-in（产物标 `stand-in-<角色>(<你的模型名>)` 并计数）→ 暂停留断点。
+  Claude 不作为默认 stand-in；只有作者明确解除冻结时才可重新调度。
 
 ## 必须守的纪律（违者产出作废）
 
