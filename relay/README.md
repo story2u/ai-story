@@ -7,6 +7,8 @@
 
 ```
 relay/
+  HANDOFF.md                     接力板（方式 M·手动 CLI 接力的进度看板，Showrunner 独占维护）
+  smoke/                         冒烟测试输出（playbook/0 §6）
   <ch>/                          按章分组（如 ch-0003/）
     <run-id>/                    一次调度一个目录
       prompt.md                  Showrunner 组装的完整提示（角色卡+任务块/四块）

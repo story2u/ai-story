@@ -13,3 +13,4 @@ context_packs/**/*.tmp.md
 
 # 不忽略骨架占位
 !**/.gitkeep
+smoke/
