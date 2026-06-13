@@ -23,17 +23,17 @@
 | 项 | 值 |
 |---|---|
 | 章节 | ch-0001《至贱命格》(黄金五章版) |
-| 当前节点 | **B2.4 — sc-0001-02〈旧契占理〉第 4 拍** |
-| 前置状态 | sc-0001-01 已 pass；sc-0001-02 认知包已编；B2.1 沈砚、B2.2 柯九、B2.3 世界拍已入场记 |
-| 下一棒角色 | 沈砚（GPT/Codex 若可用；否则按作者 DeepSeek 主创指令 stand-in） |
-| 下一 run-id | `relay/ch-0001/sc-0001-02-b04-shen-yan.r1/` |
-| 目标产物 | 回应柯九“为何熟旧契房”的钩子与镇差/账房压力；用凡俗经验给出可查年头/押记名目，不能让旧契立即定案 |
+| 当前节点 | **B2.5 — sc-0001-02〈旧契占理〉第 5 拍** |
+| 前置状态 | sc-0001-01 已 pass；sc-0001-02 b01-b04 已入场记，L0 抽检 pass |
+| 下一棒角色 | 优先世界拍（账房查经手簿/乙库目录）或柯九观察 |
+| 下一 run-id | `sc-0001-02-b05-world` 或 `relay/ch-0001/sc-0001-02-b05-ke-jiu.r1/` |
+| 目标产物 | 让经手簿出现“可查但不定案”的线索，继续保留旧砚压力；或让柯九确认沈砚与旧契/旧砚更值得查 |
 
 ## 下一步
 
-1. 组装 B2.4 沈砚 prompt：只递公开场记 Beat 1-3 的 SPEAK/ACT/世界拍公开叙述，不给柯九 INNER。
-2. 让沈砚以“七年拓碑、替人跑腿见过经手簿/押记”回应熟悉旧契的来源，并给出一个可查但未定案的年头或押记名目。
-3. 保持导演限制：小爽点只能是暂缓/逼退半步，不得彻底洗清危机；不触碰命格真相、碑魂、旧砚真身。
+1. 建议先走 B2.5 世界拍：账房按经手簿开目录，找到一个模糊匹配的旧条目，但仍需要乙库柜卷核验。
+2. 保持旧砚压力：镇差暂不夺砚，但继续以“清册暂记待验”压住。
+3. 若走柯九：只递公开场记，不给沈砚 INNER；让他确认沈砚与旧契/旧砚更值得查，不直接帮忙。
 
 ## ch-0001 节点图
 
@@ -46,7 +46,7 @@
 | C1 | sc-0001-01 场景验收 | continuity-checker@gpt | `sc-0001-01-check.r1` | ✅ pass |
 | W1 | sc-0001-01 工作态 | memory-manager@ollama(历史) | `sc-0001-01-working-memory.r1` | ✅ done；后续 Ollama 改用 minimax-m3:cloud |
 | P2 | sc-0001-02 认知包 | memory-manager@ollama(历史)/deepseek stand-in | `sc-0001-02-packs.r1` | ✅ done：Ollama 超时；DeepSeek r3 accepted |
-| B2 | sc-0001-02 演绎 | 沈砚@gpt/deepseek stand-in / 柯九@antigravity 或 deepseek stand-in | `sc-0001-02-b*` | ▶️ b01✅ b02✅ b03✅；b04 next |
+| B2 | sc-0001-02 演绎 | 沈砚@gpt/deepseek stand-in / 柯九@antigravity 或 deepseek stand-in | `sc-0001-02-b*` | ▶️ b01✅ b02✅ b03✅ b04✅ L0✅；b05 next |
 | C2/W2 | sc-0001-02 验收+工作态 | checker+memory | `sc-0001-02-check/working` | pending |
 | P3~W3 | sc-0001-03 夜半反痕 | 多 agent | `sc-0001-03-*` | pending |
 | Z1 | 正文生成 | prose-writer@deepseek | `ch-0001-prose.r1` | pending |
@@ -55,7 +55,7 @@
 ## 账本镜像
 
 ```
-调度: { dispatch: 26, claude: 2, codex: 7, deepseek: 7, nvidia: 1, antigravity: 2, gemini: 2, cursor: 0, ollama: 6, retry: 6, 方式A: 1, 手动CLI: 20, 兼任: 1, stand_in: 4, 作废: 7 }
+调度: { dispatch: 28, claude: 2, codex: 8, deepseek: 7, nvidia: 1, antigravity: 2, kiro: 1, gemini: 2, cursor: 0, ollama: 6, retry: 6, 方式A: 1, 手动CLI: 22, 兼任: 1, stand_in: 4, 作废: 7 }
 ```
 
 ## 最近历史
@@ -71,5 +71,6 @@
 - 2026-06-13 B2.2 柯九@Antigravity 完成：`agy` r1 字段名加粗作废，r2 七字段合格，已入场记。下一棒 B2.3。
 - 2026-06-13 NVIDIA API 接入: `deepseek-ai/deepseek-v4-flash` high thinking smoke 输出 `OK-nvidia`, reasoning 字段存在但不进入 `out.md`;简单请求耗时约 60s,仅作备用/高推理通道。
 - 2026-06-13 B2.3 世界拍完成：镇差/旧契房道具把压力转为经手簿、柜钥、卷号/押记名目；乙库未开，旧砚暂未被夺但被盯住。下一棒 B2.4 沈砚。
+- 2026-06-13 B2.4 沈砚@Codex 完成：回应柯九追问，以七年拓碑/跑腿经手旧契房解释熟悉来源，并给出可查但未定案的年头/名目；b01-b04 经 Kiro/GLM L0 抽检 pass。下一棒 B2.5。
 
 created_by: showrunner@codex via codex-main · handoff-board
