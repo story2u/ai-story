@@ -1,60 +1,82 @@
-# cast.md · 选角表(角色 → 本机 CLI)
+# cast.md · 选角表(角色 → 通道)
 
 > 把每个角色指派给一个模型。**换模型只改这张表,不动 `roles/` 角色卡、不动任何文档。**
-> 运行方式 B(推荐):Showrunner 按本表的"调用"列用 Bash 调度,协议见 `playbook/0-cli-relay.md`。
-> 本机三通道:`claude`(Anthropic)| `codex`(OpenAI,OAuth)| `opencode`(DeepSeek,api-key)。
+> 运行方式 M(当前,作者拍板):Showrunner 组 prompt/校验/落盘/记账,**作者在 Mac 手动执行命令或粘贴**,
+> 协议见 `playbook/0-cli-relay.md` + `relay/HANDOFF.md`(接力板)。
+> 当前编组(ad-2026-06-13-01):Codex 主控;DeepSeek 主创;Kiro / Antigravity / Cursor / Ollama 共创;
+> Claude 保留主创候补身份,但**冻结不启用**。
+> 本机通道:Codex 主会话(Showrunner)| `codex`(GPT,OAuth)| `opencode`(DeepSeek,api-key)|
+> Kiro(粘贴/本机通道以实际为准)| Antigravity(Gemini,粘贴/或本机 `gemini` CLI)|
+> Cursor(模型以本机配置为准,粘贴/或 `cursor-agent` CLI)| `ollama`(本机模型)|
+> `claude`(冻结;作者解除冻结前不调度)。
 
 ## 总控
 
 | 角色 | 角色卡 | 通道 | 启动方式 |
 |---|---|---|---|
-| Showrunner | `roles/showrunner.md` | Claude Code 主会话 | `./run.sh`(或 `claude` 交互式)。只调度不创作,**任何角色都不在主会话里演** |
+| Showrunner | `roles/showrunner.md` | Codex 主会话 | 只调度不创作;不兼任演员、正文、评审或记忆;所有角色产物走下表通道或作者批准的 stand-in |
 
-## 职能 Agent(有上帝视角,调度时 cwd=仓库根,可读其角色卡"输入"清单内文件)
+## 职能 Agent(有上帝视角;CLI 调度时 cwd=仓库根,可读其角色卡"输入"清单内文件)
 
-| 角色 | 角色卡 | 模型 | 调用(见 playbook/0 §2 模板) | 选角理由 |
+| 角色 | 角色卡 | 模型 | 调用 | 选角理由/备注 |
 |---|---|---|---|---|
-| 世界观架构师 | `roles/world-architect.md` | Claude | `claude -p` | 强一致性裁决 |
+| 世界观架构师 | `roles/world-architect.md` | Kiro | Kiro 干净新会话粘贴 / 本机 Kiro CLI(以实际为准) | 世界搭建与设定协调;从 Claude 兼任改派(ad-2026-06-13-01) |
 | 剧情导演 | `roles/plot-director.md` | GPT | `codex exec --sandbox read-only` | 结构与节奏 |
-| 总编 | `roles/editor.md` | Claude | `claude -p` | 强推理、敢驳回;与正文 maker(DeepSeek)异模型 |
-| 连续性检查器 | `roles/continuity-checker.md` | GPT | `codex exec --sandbox read-only` | 机械核对;与正文 maker(DeepSeek)异模型 |
+| 总编 | `roles/editor.md` | Cursor | Cursor 干净新会话粘贴 / `cursor-agent` CLI(以本机为准) | 与正文 maker(DeepSeek)、核对(GPT)异模型;承担终审与跨模型痕迹审计 |
+| 连续性检查器 | `roles/continuity-checker.md` | GPT | `codex exec --sandbox read-only` | 机械核对;与正文 maker 异模型 |
 | 小说输出器 | `roles/prose-writer.md` | DeepSeek | `opencode run -m deepseek/deepseek-chat` | 中文文采 |
-| 记忆管理员 | `roles/memory-manager.md` | Claude | `claude -p` | 结构化稳定 |
+| 记忆管理员 | `roles/memory-manager.md` | Ollama | `ollama run <本机模型> "$(cat $P/prompt.md)" > $P/out.md` / 粘贴通道 | 本地结构化维护;认知包仍受 GPT 隔离审计(异模型) |
+| 发布自检员(轻量·新) | `checklists/pre-publish.md` 即任务卡 | Cursor(以本机配置为准) | Cursor 干净新会话粘贴 / `cursor-agent` CLI(以本机为准) | I 组跨模型痕迹审计由独立通道核查;每章一次,轻量 |
 
-> 模型号以本机实际为准:`opencode models`(确认 deepseek 型号)、`codex exec --help`、`claude --help`。
-> 备用降级(限额/故障时):GPT→chatgpt.com 网页贴(方式A);DeepSeek→deepseek 网页贴;详见 playbook/0 §4。
+> 模型号/CLI 以本机实际为准:`opencode models`、`codex exec --help`、`gemini --help`、`cursor-agent --help`、`ollama list`。
+> 备用降级(限额/故障时):各模型网页/App 粘贴(方式A);详见 playbook/0 §4。
+> Claude 冻结期不作为默认备用或 stand-in;只有作者明确解除冻结并更新本表/接力板后才可调度。
 
-## 角色演员(零上帝视角;调度时 cwd=run 目录,prompt 即全部世界,禁读文件)
+## 角色演员(零上帝视角;prompt 即全部世界,禁读文件禁用工具)
 
 | 角色 | slug | 角色卡 | 模型 | 调用 | 备注 |
 |---|---|---|---|---|---|
 | 男主·沈砚 | `shen-yan` | `roles/character-actor.md` | GPT | `codex exec --cd $P --sandbox read-only --skip-git-repo-check` | 沉静守拙、认死理 |
 | 女主·苏决 | `su-jue` | `roles/character-actor.md` | DeepSeek | `(cd $P && opencode run -m deepseek/deepseek-chat …)` | 凌厉寡言、剑修 |
-| 反派·柯九 | `ke-jiu` | `roles/character-actor.md` | Claude | `(cd $P && claude -p …)` | 和气健谈、藏钩子 |
+| 反派·柯九 | `ke-jiu` | `roles/character-actor.md` | **Gemini / Antigravity** | **Antigravity 干净新会话粘贴**(⚠️ 不挂载本仓库/空环境;备用:`(cd $P && gemini -p …)`) | 和气健谈、藏钩子;自 Claude 改派(ad-2026-06-12-02);演员永不由主会话兼任 |
 
-三家演员=天然声音差异。新角色入册时在此表加行,按声线配模型。
+三家演员(GPT/DeepSeek/Gemini)=天然声音差异,全异模型。新角色入册时在此表加行,按声线配模型
+(Kiro/Antigravity/Cursor/Ollama 可作新演员或职能通道候选;Claude 冻结期不入候选池)。
+
+## 冻结候补
+
+| 角色/能力 | 模型 | 状态 | 启用条件 |
+|---|---|---|---|
+| 主创候补 / 高阶审稿 / 复杂设定裁决 | Claude | **保留但不启用** | 作者明确解除冻结,并同步修改本表、`AGENTS.md`/`CLAUDE.md` 与 `relay/HANDOFF.md` |
 
 ## maker-checker 矩阵(§10 铁律2 的落地,发布前 I 组审计对照此表)
 
 | 产物 | maker | checker(必须异模型) |
 |---|---|---|
-| 正文 `drafts/` | DeepSeek(输出器) | GPT(机械核对)→ Claude(终审) ✓ 三家全链异构 |
-| 场记 `transcripts/` | 三家演员 | GPT(场景验收)+ Claude(总编抽检) |
-| 章纲/brief `story/` | GPT(导演) | Claude(终审) ✓ |
-| 认知包 `context_packs/` | Claude(记忆) | GPT(场景验收的隔离审计) ✓ |
-| 记忆补丁 `memory/` | Claude(记忆) | Showrunner 回读校验(同模型,但 L3 是机械比对,可接受;存疑时人工逐条) |
+| 正文 `drafts/` | DeepSeek(输出器) | GPT(机械核对)→ Cursor(总编) ✓ |
+| 场记 `transcripts/` | 三家演员(GPT/DeepSeek/Gemini) | GPT(场景验收)+ Cursor(总编抽检) |
+| 章纲/brief `story/` | GPT(导演) / Kiro(架构师) | Cursor(总编) ✓ |
+| 认知包 `context_packs/` | Ollama(记忆) | GPT(场景验收的隔离审计) ✓ 异模型 |
+| 记忆补丁 `memory/` | Ollama(记忆) | Codex Showrunner 回读校验;存疑时改派 GPT 抽查或作者人工 |
+| 发布前自检 | Codex Showrunner 自查 | **Cursor(发布自检员)复核** ✓ 独立通道 |
 
-> 总编(`claude -p` 子进程)与 Showrunner(Claude 主会话)同模型——满足"至少异会话"的底线;
-> 终审驳回的是 DeepSeek 的正文与 GPT 的结构,不审自己的产出,无自产自审。
+> Codex 是主控而非 maker/checker;若某一步产物由 `codex exec` 生成,其 checker 不得再用 GPT/Codex 通道。
+> Claude 冻结期不参与 maker-checker 链路,账本中 `claude` 应为 0。
 
 ## 使用规矩
 
-1. **一次调度=一个干净上下文**(无状态单次调用),天然不串味;绝不用 resume/session 续聊。
+1. **一次调度=一个干净上下文**:CLI 单次调用,或 IDE 型 agent(Kiro/Antigravity/Cursor)的**全新会话**;绝不续聊。
 2. 每次调度 prompt 第一块永远是该角色的**角色卡全文**(无状态意味着每次都要带,见 playbook/0 §3)。
-3. 一致性兜底永远是:世界以 `world/` 为准、记忆以 `memory/` 为准、过审以总编为准——与模型无关。
-4. stand-in 需用户当场批准并计数;**评审角色绝不由"与 maker 同模型"者 stand-in**(playbook/0 §4 红线)。
+3. **无默认兼任**:Codex Showrunner 不代写任何角色交付物。确需 stand-in 时必须作者当场批准、产物如实标注、账本计数。
+4. **演员棒走粘贴通道时**(Kiro/Antigravity/Cursor):作者开**不挂载本仓库的干净新会话**,粘 prompt.md 全文,
+   把输出存回 `relay/<ch>/<run-id>/out.md`(或贴回 Codex Showrunner 落盘);账本计 `方式A`。
+5. 一致性兜底永远是:世界以 `world/` 为准、记忆以 `memory/` 为准、过审以总编为准——与模型无关。
+6. stand-in 需作者当场批准并计数;**评审角色绝不由"与 maker 同模型"者 stand-in**(playbook/0 §4 红线)。
+   Claude 冻结期不作为 stand-in;Cursor 已是总编/发布自检时,不得再审自己生成的产物。
 
 ## 换模型 / 加模型
 
 - 换:改本表"模型"与"调用"两列即可,下次调度即生效。人设与记忆在文档里,连续性不丢。
-- 加第四家(如本机再装新 CLI):在 playbook/0 §2 加一行命令模板,在本表选角即可。
+- 加:在 playbook/0 §2 加一行命令模板(无 CLI 的 IDE 型 agent 走"干净新会话粘贴"),在本表选角即可。
+
+created_by: showrunner@codex via codex-main · cast-r4(ad-2026-06-13-01)
