@@ -6,7 +6,7 @@
 ## 当前状态（2026-06-13 起）
 
 - **Showrunner 主控已改为 Codex 交互式主会话。** Claude 不再默认担任总控。
-- **主创 / 正文主力已改为 DeepSeek。** 创作型任务按 `cast.md` 与 `relay/HANDOFF.md` 调度。
+- **主创 / 正文主力已改为 DeepSeek。** 创作型任务按 `cast.md` 与 `relay/HANDOFF.md` 调度；NVIDIA API 的 `deepseek-ai/deepseek-v4-flash` 可作高推理备用通道。
 - **Kiro / Antigravity / Cursor / Ollama** 可作为共创通道，按接力板分配任务。
 - **Ollama** 使用 `minimax-m3:cloud`；`kimi-k2.6:cloud` 返回订阅限制，已弃用。
 - **Claude 保留主创角色，但当前冻结不启用。** 除非作者明确解除冻结并同步 `cast.md` / 接力板，否则不要调用 `claude -p`，也不要让 Claude 主会话接管流程。

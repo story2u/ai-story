@@ -6,7 +6,7 @@
 > 当前编组(ad-2026-06-13-03):Codex 主控;DeepSeek 主创;Kiro / Antigravity / Cursor / Ollama 共创;
 > Claude 保留主创候补身份,但**冻结不启用**。
 > 本机通道:Codex 主会话(Showrunner)| `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex`(GPT,OAuth)|
-> `opencode`(DeepSeek,api-key)| `kiro-cli chat --no-interactive`(Kiro)| `agy -p`(Antigravity)|
+> `opencode`(DeepSeek,api-key)| NVIDIA API `deepseek-ai/deepseek-v4-flash`(备用)| `kiro-cli chat --no-interactive`(Kiro)| `agy -p`(Antigravity)|
 > Cursor App(粘贴/以本机配置为准)| `ollama run --think=false --hidethinking minimax-m3:cloud`| `claude`(冻结;作者解除冻结前不调度)。
 
 ## 总控
@@ -23,11 +23,12 @@
 | 剧情导演 | `roles/plot-director.md` | GPT | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --sandbox read-only --output-last-message $P/out.md "$(cat $P/prompt.md)"` | 结构与节奏 |
 | 总编 | `roles/editor.md` | Cursor | Cursor 干净新会话粘贴 / `cursor-agent` CLI(以本机为准) | 与正文 maker(DeepSeek)、核对(GPT)异模型;承担终审与跨模型痕迹审计 |
 | 连续性检查器 | `roles/continuity-checker.md` | GPT | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --sandbox read-only --output-last-message $P/out.md "$(cat $P/prompt.md)"` | 机械核对;与正文 maker 异模型 |
-| 小说输出器 | `roles/prose-writer.md` | DeepSeek | `opencode run -m deepseek/deepseek-chat` | 中文文采 |
+| 小说输出器 | `roles/prose-writer.md` | DeepSeek | `opencode run -m deepseek/deepseek-chat` | 中文文采；备用 NVIDIA API: `deepseek-ai/deepseek-v4-flash` |
 | 记忆管理员 | `roles/memory-manager.md` | Ollama(MiniMax M3) | `ollama run --think=false --hidethinking minimax-m3:cloud "$(cat $P/prompt.md)" > $P/out.md` | 结构化维护;认知包仍受 GPT 隔离审计(异模型)。Kiro 为备用 |
 | 发布自检员(轻量·新) | `checklists/pre-publish.md` 即任务卡 | Cursor(以本机配置为准) | Cursor 干净新会话粘贴 / `cursor-agent` CLI(以本机为准) | I 组跨模型痕迹审计由独立通道核查;每章一次,轻量 |
 
 > 模型号/CLI 以本机实际为准:`opencode models`、`/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --help`、`kiro-cli chat --list-models`、`agy models`、`ollama list`、`cursor-agent --help`。
+> NVIDIA API 评估(2026-06-13):`deepseek-ai/deepseek-v4-flash` 冒烟成功;`NVIDIA_API_KEY` 在 `.zshrc`,调度需 `zsh -ic` 或显式 source;high thinking 简单请求约 60s,仅作备用/高推理通道。
 > 备用降级(限额/故障时):各模型网页/App 粘贴(方式A);详见 playbook/0 §4。
 > Claude 冻结期不作为默认备用或 stand-in;只有作者明确解除冻结并更新本表/接力板后才可调度。
 > Ollama 评估(2026-06-13):`kimi-k2.6:cloud` 返回 403 subscription required;`minimax-m3:cloud` 约 2.45s 冒烟成功。调用时必须加 `--think=false --hidethinking`。

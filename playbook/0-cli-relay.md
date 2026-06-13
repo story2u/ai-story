@@ -39,6 +39,7 @@
 |---|---|---|---|
 | GPT | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex` | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --sandbox read-only --output-last-message $P/out.md "$(cat $P/prompt.md)"` (cwd=仓库根) | `/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --cd $P --sandbox read-only --skip-git-repo-check --output-last-message $P/out.md "$(cat $P/prompt.md)"` |
 | DeepSeek | `opencode` | `opencode run -m deepseek/deepseek-chat "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && opencode run -m deepseek/deepseek-chat "$(cat prompt.md)" > out.md)` |
+| DeepSeek/NVIDIA | NVIDIA API | 见下方「NVIDIA API 模板」 | 同职能模板；演员慎用,需确认不把 reasoning 并入正式输出 |
 | Kiro | `kiro-cli` | `kiro-cli chat --no-interactive "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && kiro-cli chat --no-interactive "$(cat prompt.md)" > out.md)` |
 | Antigravity | `agy` | `agy --model "GPT-OSS 120B (Medium)" -p "$(cat $P/prompt.md)" > $P/out.md` (cwd=仓库根) | `(cd $P && agy --model "GPT-OSS 120B (Medium)" -p "$(cat prompt.md)" > out.md)` |
 | Cursor | Cursor / `cursor-agent` | 总编/发布自检员:Cursor 打开仓库**只读**粘贴任务,或 `cursor-agent -p`(以本机为准) | 演员候选,规则同 Antigravity 行 |
@@ -48,9 +49,25 @@
 无 CLI 的粘贴棒:作者把 `$P/prompt.md` 全文粘入该工具**全新会话**,输出存回 `$P/out.md`(或贴回 Showrunner 落盘),账本计 `方式A`。
 
 - 模型号以本机为准:`opencode models`、`/Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --help`、`kiro-cli chat --list-models`、`agy models`、`ollama list`、`cursor-agent --help`;在 cast.md 改,此表不动。
+- NVIDIA API 使用 OpenAI-compatible Chat Completions；`NVIDIA_API_KEY` 位于 `.zshrc`,非交互调度要用 `zsh -ic` 或显式 source。正式产物只取 `message.content`；`reasoning` / `reasoning_content` 不写入 `out.md`。
 - codex 的进度流走 stderr、最终消息走 stdout/`-o`,正好只取交付物。
 - 所有 CLI 都按"单次调用"使用;**不要**用 resume/session 续聊(会引入会话态,破坏不变式 2)。
 - Claude 冻结期任何 `claude -p` 调用都应视为误调度;若必须启用,先由作者解除冻结并同步 `cast.md` / `CLAUDE.md` / 接力板。
+
+### NVIDIA API 模板
+
+```bash
+P=relay/<ch>/<run-id>
+env P="$P" NVIDIA_MODEL="deepseek-ai/deepseek-v4-flash" zsh -ic '
+  curl -sS https://integrate.api.nvidia.com/v1/chat/completions \
+    -H "Authorization: Bearer $NVIDIA_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -n --arg model "$NVIDIA_MODEL" --rawfile prompt "$P/prompt.md" \
+      "{model:$model,messages:[{role:\"user\",content:$prompt}],temperature:1,top_p:0.95,max_tokens:16384,chat_template_kwargs:{thinking:true,reasoning_effort:\"high\"},stream:false}")" \
+    > "$P/raw.json"
+  jq -r ".choices[0].message.content // empty" "$P/raw.json" > "$P/out.md"
+'
+```
 
 ## 3. prompt 组装模板
 
@@ -120,6 +137,7 @@
 ```bash
 /Users/bruce/.nvm/versions/node/v24.13.0/bin/codex exec --sandbox read-only "回答:OK-codex"
 opencode run -m deepseek/deepseek-chat "回答:OK-deepseek"
+zsh -ic 'curl -sS https://integrate.api.nvidia.com/v1/chat/completions -H "Authorization: Bearer $NVIDIA_API_KEY" -H "Content-Type: application/json" -d "{\"model\":\"deepseek-ai/deepseek-v4-flash\",\"messages\":[{\"role\":\"user\",\"content\":\"回答:OK-nvidia\"}],\"max_tokens\":64,\"stream\":false}" | jq -r ".choices[0].message.content // .error.message"'
 kiro-cli chat --no-interactive "回答:OK-kiro"
 agy --model "GPT-OSS 120B (Medium)" -p "回答:OK-agy"
 ollama run --think=false --hidethinking minimax-m3:cloud "回答:OK-ollama"
