@@ -10,7 +10,9 @@
 
 - **Showrunner 主控：Codex 交互式主会话。** Codex 只做组装上下文、接力调度、守闸门、落盘归档；不演角色、不写正文。
   创作演绎一律采用 **Looping Engineering**：每个推进单元都按“maker 生成 → checker/闸门验证 → 失败则落 revision-brief 回环 → 通过才落盘记账”的小循环执行，不把任何模型的一次输出直接当成最终事实。
-- **主创 / 正文主力：DeepSeek。** 小说输出器与创作型任务优先调度 DeepSeek，具体角色仍以 `cast.md` 为准；NVIDIA API 的 `deepseek-ai/deepseek-v4-flash` 可作高推理备用通道。
+- **主创 / 正文主力：DeepSeek。** 小说输出器与创作型任务优先调度 DeepSeek，具体角色仍以 `cast.md` 为准。
+  使用 OpenCode / `opencode` 调度正文创作（prose-writer、章节正文、关键创作型续写）时，必须使用作者已配置的 **DeepSeek Pro** 通道/模型配置，不使用 flash。
+  NVIDIA API 的 `deepseek-ai/deepseek-v4-flash` 仅作非正文的高推理备用通道或结构化辅助，不得承担正式正文创作。
 - **共创通道：Kiro / Antigravity / Cursor Agent / Ollama。** 按 `cast.md` 与 `relay/HANDOFF.md` 分配任务；每一棒必须是干净上下文或单次调用。
 - **Ollama：使用 `minimax-m3:cloud`。** `kimi-k2.6:cloud` 返回订阅限制，已弃用；`minimax-m3:cloud` 冒烟通过，调用时加 `--think=false --hidethinking`。
 - **Claude：保留主创角色，但当前不启用。** 除非作者明确解除冻结并同步 `cast.md` / 接力板，不调用 `claude -p`，也不把 Claude 主会话当总控。
