@@ -9,6 +9,7 @@
 ## 当前编组（2026-06-13 起）
 
 - **Showrunner 主控：Codex 交互式主会话。** Codex 只做组装上下文、接力调度、守闸门、落盘归档；不演角色、不写正文。
+  创作演绎一律采用 **Looping Engineering**：每个推进单元都按“maker 生成 → checker/闸门验证 → 失败则落 revision-brief 回环 → 通过才落盘记账”的小循环执行，不把任何模型的一次输出直接当成最终事实。
 - **主创 / 正文主力：DeepSeek。** 小说输出器与创作型任务优先调度 DeepSeek，具体角色仍以 `cast.md` 为准；NVIDIA API 的 `deepseek-ai/deepseek-v4-flash` 可作高推理备用通道。
 - **共创通道：Kiro / Antigravity / Cursor / Ollama。** 按 `cast.md` 与 `relay/HANDOFF.md` 分配任务；每一棒必须是干净上下文或单次调用。
 - **Ollama：使用 `minimax-m3:cloud`。** `kimi-k2.6:cloud` 返回订阅限制，已弃用；`minimax-m3:cloud` 冒烟通过，调用时加 `--think=false --hidethinking`。
@@ -50,6 +51,13 @@
 - 流程要任何角色干活时（**包括指派给你所属模型的角色**）：按 `playbook/0-cli-relay.md` 组 prompt、
   调度对应 CLI、校验、落盘、盖 provenance 戳。**不要在你自己的会话里代演**——v1 的单模型劣化就是这么来的。
   旧的"Claude 主会话兼任架构师/总编/记忆"规则随 Claude 冻结一并暂停；如需兼任，必须有新的作者裁定并写入 `cast.md`。
+- 创作/演绎时默认跑 **Looping Engineering 小循环**：
+  1. **定入口**：从 `relay/HANDOFF.md` 与章节"流水线状态"取当前节点，只推进一个明确 run-id。
+  2. **maker 生成**：按 `cast.md` 调度对应模型；演员拍输出七字段，世界拍/职能棒输出规定格式。
+  3. **checker 验证**：L0 每 3–5 拍或存疑时抽检；场景收束后必须 L1 场景验收；章级继续走 L2 连续性/总编。
+  4. **失败回环**：任何 flag/redo/revise 必须落结构化修订指令并计轮次；不得口头修、不得直接覆盖失败产物。
+  5. **通过落盘**：只有 pass 后才写入场记/工作态/接力板，更新调度账本与 provenance，再进入下一棒。
+  maker-checker 尽量异模型；若本场含 Codex/GPT maker，整场验收优先改派 Kiro/Cursor/Ollama 等非 GPT 通道，避免自己给自己放行。
 - CLI 通道故障时按降级阶梯（playbook/0 §4）：重试 → 出"待粘贴块"由用户人肉接力（方式 A）→
   用户当场批准的 stand-in（产物标 `stand-in-<角色>(<你的模型名>)` 并计数）→ 暂停留断点。
   Claude 不作为默认 stand-in；只有作者明确解除冻结时才可重新调度。
@@ -79,6 +87,7 @@
 
 - [ ] 我是总控还是被单次调用的角色？这一步该谁干？我有没有越权替别人创作？
 - [ ] 我是总控？——这一步我是不是该调度 CLI 而不是自己动手演？
+- [ ] 我是在按 Looping Engineering 推进吗？maker、checker、失败回环、pass 落盘、账本更新是否齐全？
 - [ ] 我要递出去的 prompt 里，夹带了对方不该知道的信息吗？
 - [ ] 我是角色演员？——那我刚才是不是想去读文件/用工具了？（停手）
 - [ ] 产物落盘了吗？provenance 戳盖了吗？上一道闸门过了吗？回退有 revision-brief 吗？轮次记了吗？

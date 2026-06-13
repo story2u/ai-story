@@ -23,17 +23,17 @@
 | 项 | 值 |
 |---|---|
 | 章节 | ch-0001《至贱命格》(黄金五章版) |
-| 当前节点 | **B2.5 — sc-0001-02〈旧契占理〉第 5 拍** |
-| 前置状态 | sc-0001-01 已 pass；sc-0001-02 b01-b04 已入场记，L0 抽检 pass |
-| 下一棒角色 | 优先世界拍（账房查经手簿/乙库目录）或柯九观察 |
-| 下一 run-id | `sc-0001-02-b05-world` 或 `relay/ch-0001/sc-0001-02-b05-ke-jiu.r1/` |
-| 目标产物 | 让经手簿出现“可查但不定案”的线索，继续保留旧砚压力；或让柯九确认沈砚与旧契/旧砚更值得查 |
+| 当前节点 | **P3 — sc-0001-03〈夜半反痕〉认知包** |
+| 前置状态 | sc-0001-01 已 pass；sc-0001-02 已 pass 并更新 `memory/working/ch-0001.md` |
+| 下一棒角色 | 记忆管理员（Ollama/MiniMax M3；必要时 Kiro 备用） |
+| 下一 run-id | `relay/ch-0001/sc-0001-03-packs.r1/` |
+| 目标产物 | 为 sc-0001-03 出场角色编私有认知包；必须带入旧砚暂留、三日复核、不得离镇、柯九深查等工作态后果，但不得预写夜间异痕事件脚本 |
 
 ## 下一步
 
-1. 建议先走 B2.5 世界拍：账房按经手簿开目录，找到一个模糊匹配的旧条目，但仍需要乙库柜卷核验。
-2. 保持旧砚压力：镇差暂不夺砚，但继续以“清册暂记待验”压住。
-3. 若走柯九：只递公开场记，不给沈砚 INNER；让他确认沈砚与旧契/旧砚更值得查，不直接帮忙。
+1. 组装 P3 认知包 prompt：输入 `roles/memory-manager.md`、`story/scenes/sc-0001-03.md`、`memory/working/ch-0001.md`、必要的 `memory/*.md` 摘要。
+2. 重点隔离：沈砚知道旧砚暂留但三日复核、对柯九更警惕；柯九知道沈砚/旧砚/旧契值得深查。演员认知包不得写“夜间会出现暗痕”的事件脚本。
+3. 认知包经 Showrunner 审核后进入 B3 演绎。
 
 ## ch-0001 节点图
 
@@ -46,16 +46,16 @@
 | C1 | sc-0001-01 场景验收 | continuity-checker@gpt | `sc-0001-01-check.r1` | ✅ pass |
 | W1 | sc-0001-01 工作态 | memory-manager@ollama(历史) | `sc-0001-01-working-memory.r1` | ✅ done；后续 Ollama 改用 minimax-m3:cloud |
 | P2 | sc-0001-02 认知包 | memory-manager@ollama(历史)/deepseek stand-in | `sc-0001-02-packs.r1` | ✅ done：Ollama 超时；DeepSeek r3 accepted |
-| B2 | sc-0001-02 演绎 | 沈砚@gpt/deepseek stand-in / 柯九@antigravity 或 deepseek stand-in | `sc-0001-02-b*` | ▶️ b01✅ b02✅ b03✅ b04✅ L0✅；b05 next |
-| C2/W2 | sc-0001-02 验收+工作态 | checker+memory | `sc-0001-02-check/working` | pending |
-| P3~W3 | sc-0001-03 夜半反痕 | 多 agent | `sc-0001-03-*` | pending |
+| B2 | sc-0001-02 演绎 | 沈砚@gpt/deepseek stand-in / 柯九@antigravity 或 deepseek stand-in | `sc-0001-02-b*` | ✅ done，7 beats，L0✅ |
+| C2/W2 | sc-0001-02 验收+工作态 | checker+memory | `sc-0001-02-check/working` | ✅ pass(r1)，working-updated |
+| P3~W3 | sc-0001-03 夜半反痕 | 多 agent | `sc-0001-03-*` | ▶️ P3 next |
 | Z1 | 正文生成 | prose-writer@deepseek | `ch-0001-prose.r1` | pending |
 | Z2~Z5 | 连续性/终审/记忆/发布前自检 | GPT/非同模评审/Cursor候选 | `ch-0001-*` | pending |
 
 ## 账本镜像
 
 ```
-调度: { dispatch: 28, claude: 2, codex: 8, deepseek: 7, nvidia: 1, antigravity: 2, kiro: 1, gemini: 2, cursor: 0, ollama: 6, retry: 6, 方式A: 1, 手动CLI: 22, 兼任: 1, stand_in: 4, 作废: 7 }
+调度: { dispatch: 37, claude: 2, codex: 8, deepseek: 9, nvidia: 1, antigravity: 3, kiro: 3, gemini: 2, cursor: 0, ollama: 10, retry: 6, 方式A: 1, 手动CLI: 31, 兼任: 1, stand_in: 4, 作废: 7 }
 ```
 
 ## 最近历史
@@ -72,5 +72,8 @@
 - 2026-06-13 NVIDIA API 接入: `deepseek-ai/deepseek-v4-flash` high thinking smoke 输出 `OK-nvidia`, reasoning 字段存在但不进入 `out.md`;简单请求耗时约 60s,仅作备用/高推理通道。
 - 2026-06-13 B2.3 世界拍完成：镇差/旧契房道具把压力转为经手簿、柜钥、卷号/押记名目；乙库未开，旧砚暂未被夺但被盯住。下一棒 B2.4 沈砚。
 - 2026-06-13 B2.4 沈砚@Codex 完成：回应柯九追问，以七年拓碑/跑腿经手旧契房解释熟悉来源，并给出可查但未定案的年头/名目；b01-b04 经 Kiro/GLM L0 抽检 pass。下一棒 B2.5。
+- 2026-06-13 B2.5 looping engineering 完成：Kiro 给旧契房程序微裁决，DeepSeek 生成世界拍，Ollama/MiniMax L0 pass；经手簿与乙库残卷出现可查线索，但旧具来历仍不闭环、旧砚暂记待验。下一棒 B2.6 柯九。
+- 2026-06-13 B2.6 柯九@Antigravity 完成：从“旧具随工交接/来历栏空白”切入，旁敲侧击追问交接者名号；Ollama/MiniMax L0 pass。下一棒 B2.7 世界拍收束。
+- 2026-06-13 B2.7/C2/W2 完成：DeepSeek 世界拍收束旧契房程序，旧砚暂归沈砚照管但三日复核、不得离身外借、不得擅离青槐镇；Ollama L0 pass，Kiro/GLM 场景验收 pass，Ollama 工作态已并入 `memory/working/ch-0001.md`。下一棒 P3。
 
 created_by: showrunner@codex via codex-main · handoff-board
