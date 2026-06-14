@@ -1,0 +1,1 @@
+> SPOT_CHECK(beat 1-3): pass

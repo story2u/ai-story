@@ -22,18 +22,18 @@
 
 | 项 | 值 |
 |---|---|
-| 章节 | ch-0002《清册风波》(黄金五章版) |
-| 当前节点 | **ch-0002 / 完成·发布前自检 pass** |
-| 前置状态 | ch-0001 正文按外部审查意见重写至 prose r4；连续性 pass(r4)；总编 pass(r4)；memory patch verified；发布前自检 pass(r5)；`memory/working/ch-0001.md` 已删除；ch-0002 scene briefs pass；sc-0002-01/02/03 演绎完成、L1 pass；`drafts/ch-0002.md` prose r4；continuity r2 pass；editorial r1 pass；memory patch verified；pre-publish r1 pass；`memory/working/ch-0002.md` 已删除 |
-| 下一棒角色 | Showrunner |
-| 下一 run-id | `ch-0003-start`（待作者继续指令） |
-| 目标产物 | 若继续创作：从 ch-0003 章纲/场景 brief 节点启动；若发布：提交 ch-0002 相关文件 |
+| 章节 | ch-0003《剑落古槐》(黄金五章版) |
+| 当前节点 | **ch-0003 / sc-0003-02 running，b01-b04 入场，L0 pass，待 b05 world-beat 重跑** |
+| 前置状态 | ch-0001 正文按外部审查意见重写至 prose r4；连续性 pass(r4)；总编 pass(r4)；memory patch verified；发布前自检 pass(r5)；`memory/working/ch-0001.md` 已删除；ch-0002 完成至发布前自检 pass 并已提交推送；`memory/working/ch-0002.md` 已删除；ch-0003 story summary done；scene briefs `sc-0003-01..04` 已由 plot-director@gpt 生成并由 stand-in-editor@kiro pass；sc-0003-01 演绎完成，L0 pass，L1 pass(stand-in-antigravity)，`memory/working/ch-0003.md` 已并入苏决入镇前状态；sc-0003-02 沈砚/柯九认知包已由 stand-in-memory-manager@kiro 生成并经 Showrunner 清理落盘；b01-b04 已入场，b01/b02/b03 均有作废回环，b01-b03 L0 pass |
+| 下一棒角色 | town-world@deepseek |
+| 下一 run-id | `sc-0003-02-b05-town-world.r1/r2` |
+| 目标产物 | `transcripts/sc-0003-02.md` 追加 Beat 5 收束世界拍；不得新增未登记官职/机构/精确时限/法条原文，不得把“柯九”与“游方人”写成两人 |
 
 ## 下一步
 
-1. ch-0002 已完成至发布前自检 pass；本轮未执行 git commit。
-2. 若作者要求提交，按 `playbook/6-review-commit.md` staging/commit。
-3. 若作者要求继续第三章，从 ch-0003 章纲/场景 brief 节点启动，并继续按 Looping Engineering 执行。
+1. 重跑 `sc-0003-02-b05-town-world.r1/r2`：r1 输出未入场，因新增“师爷/班头/竹签/前三个月/门牌更造/签押底簿/开堂”等未登记制度细节，应作废。
+2. b05 目标只给程序性小让步：可给“收讫短签/明日开衙凭签对证旧契与清册役籍”的窄口子；旧砚仍须本人随身候复核，入夜禁近碑林仍有效，再堵门可记扰衙。
+3. b05 入场后收束 sc-0003-02，优先调 Kiro 做 L1 scene-check；sc-0003-03 演绎与 L1 验收必须机械检查“苏决不得现身救场/不得让沈砚知道身份/不得给直接指令”；sc-0003-04 按 checker 建议拆为 04a/04b 子场错位调度。
 
 ## ch-0001 节点图
 
