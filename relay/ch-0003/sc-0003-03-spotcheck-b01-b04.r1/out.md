@@ -1,0 +1,1 @@
+SPOT_CHECK(beat 1-4): pass
