@@ -24,7 +24,7 @@
 |---|---|
 | 章节 | ch-0001《至贱命格》(黄金五章版) |
 | 当前节点 | **ch-0001 complete / next: ch-0002 P1 认知包** |
-| 前置状态 | ch-0001 正文完成；连续性 pass(r2)；总编 pass(r2)；memory patch verified；发布前自检 pass(r2)；`memory/working/ch-0001.md` 已删除 |
+| 前置状态 | ch-0001 正文按外部审查意见重写至 prose r4；连续性 pass(r4)；总编 pass(r4)；memory patch verified；发布前自检 pass(r5)；`memory/working/ch-0001.md` 已删除 |
 | 下一棒角色 | 记忆管理员（Ollama/MiniMax M3；若再卡顿则 Kiro 备用） |
 | 下一 run-id | `relay/ch-0002/sc-0002-01-packs.r1/` |
 | 目标产物 | 为 ch-0002 首场编私有认知包；必须基于正式 `memory/`，不要读取已删除的 ch-0001 工作态 |
@@ -49,13 +49,13 @@
 | B2 | sc-0001-02 演绎 | 沈砚@gpt/deepseek stand-in / 柯九@antigravity 或 deepseek stand-in | `sc-0001-02-b*` | ✅ done，7 beats，L0✅ |
 | C2/W2 | sc-0001-02 验收+工作态 | checker+memory | `sc-0001-02-check/working` | ✅ pass(r1)，working-updated |
 | P3~W3 | sc-0001-03 夜半反痕 | 多 agent | `sc-0001-03-*` | ✅ pass(r1)，working-updated→正式记忆 |
-| Z1 | 正文生成 | prose-writer@deepseek | `ch-0001-prose.r1/r2` | ✅ done，r2 accepted |
-| Z2~Z5 | 连续性/终审/记忆/发布前自检 | Kiro/Cursor/Kiro/Cursor | `ch-0001-*` | ✅ continuity pass(r2)，editorial pass(r2)，memory verified，pre-publish pass(r2) |
+| Z1 | 正文生成 | prose-writer@deepseek | `ch-0001-prose.r1/r2/r3/r4` | ✅ done，r4 accepted（DeepSeek Pro 重写） |
+| Z2~Z5 | 连续性/终审/记忆/发布前自检 | Kiro/Cursor/Kiro/Cursor | `ch-0001-*` | ✅ continuity pass(r4)，editorial pass(r4)，memory verified，pre-publish pass(r5) |
 
 ## 账本镜像
 
 ```
-调度: { dispatch: 58, claude: 2, codex: 11, deepseek: 13, nvidia: 1, antigravity: 4, kiro: 7, gemini: 2, cursor: 4, ollama: 16, retry: 9, 方式A: 1, 手动CLI: 52, 兼任: 1, stand_in: 4, 作废: 7 }
+调度: { dispatch: 65, claude: 2, codex: 13, deepseek: 15, nvidia: 1, antigravity: 4, kiro: 7, gemini: 2, cursor: 7, ollama: 16, retry: 10, 方式A: 1, 手动CLI: 52, 兼任: 1, stand_in: 4, 作废: 7 }
 ```
 
 ## 最近历史
@@ -80,5 +80,8 @@
 - 2026-06-13 ch-0001 审核完成：Kiro 连续性 r1 pass；Cursor Agent 总编 r1 因“青槐镇”地名 revise；事实源统一为“碑亭镇”后 Kiro r2 pass、Cursor Agent r2 pass。
 - 2026-06-13 ch-0001 记忆落库完成：Ollama memory patch 通道卡顿中止；Kiro 备用生成 patch，经 Showrunner 审阅修正后应用，L3 回读 verified，`memory/working/ch-0001.md` 删除。
 - 2026-06-13 ch-0001 发布前自检 r2 pass：补齐正文与 memory patch provenance 戳，Cursor Agent I 组复审通过，第一章可提交发布。
+- 2026-06-14 作者要求核验 `docs/审查意见.md` 并用 opencode DeepSeek Pro 重写第一章：Showrunner 裁定审查意见总体合理；`opencode/deepseek-v4-pro` 因 billing 失败，改用 `deepseek/deepseek-v4-pro`。prose r3 完成节奏重写；continuity r3 打回未登记判词「五行驳杂」；落 `ch-0001-prose.r4/revision-brief.md` 后 prose r4 删除该短语，continuity r4 pass，Cursor editorial r4 pass。注意：opencode r4 通道曾直接 edit `drafts/ch-0001.md`，Showrunner 已复核并保留仅两处预期改动。
+- 2026-06-14 ch-0001 pre-publish r4 pass：Cursor Agent 轻量复核通过；同步章文件/HANDOFF 至发布前 r4，并修正章纲“白天微温”漂移为夜间微温。
+- 2026-06-14 ch-0001 pre-publish r5 pass：核销 r4 的账本同步与章纲漂移 WARN；剩余 WARN 为 opencode r4 直写、stand_in 批准记录、归档快照旧地名，均不阻塞发布。
 
 created_by: showrunner@codex via codex-main · handoff-board
