@@ -22,18 +22,18 @@
 
 | 项 | 值 |
 |---|---|
-| 章节 | ch-0001《至贱命格》(黄金五章版) |
-| 当前节点 | **ch-0001 complete / next: ch-0002 P1 认知包** |
-| 前置状态 | ch-0001 正文按外部审查意见重写至 prose r4；连续性 pass(r4)；总编 pass(r4)；memory patch verified；发布前自检 pass(r5)；`memory/working/ch-0001.md` 已删除 |
-| 下一棒角色 | 记忆管理员（Ollama/MiniMax M3；若再卡顿则 Kiro 备用） |
-| 下一 run-id | `relay/ch-0002/sc-0002-01-packs.r1/` |
-| 目标产物 | 为 ch-0002 首场编私有认知包；必须基于正式 `memory/`，不要读取已删除的 ch-0001 工作态 |
+| 章节 | ch-0002《清册风波》(黄金五章版) |
+| 当前节点 | **ch-0002 / 完成·发布前自检 pass** |
+| 前置状态 | ch-0001 正文按外部审查意见重写至 prose r4；连续性 pass(r4)；总编 pass(r4)；memory patch verified；发布前自检 pass(r5)；`memory/working/ch-0001.md` 已删除；ch-0002 scene briefs pass；sc-0002-01/02/03 演绎完成、L1 pass；`drafts/ch-0002.md` prose r4；continuity r2 pass；editorial r1 pass；memory patch verified；pre-publish r1 pass；`memory/working/ch-0002.md` 已删除 |
+| 下一棒角色 | Showrunner |
+| 下一 run-id | `ch-0003-start`（待作者继续指令） |
+| 目标产物 | 若继续创作：从 ch-0003 章纲/场景 brief 节点启动；若发布：提交 ch-0002 相关文件 |
 
 ## 下一步
 
-1. 提交并推送 ch-0001 完成态。
-2. 下一章从 `story/chapters/ch-0002.md` 与 `story/scenes/sc-0002-01.md` 进入 P1 认知包。
-3. ch-0002 编包输入使用正式 `memory/*.md`；不得再引用 `memory/working/ch-0001.md`。
+1. ch-0002 已完成至发布前自检 pass；本轮未执行 git commit。
+2. 若作者要求提交，按 `playbook/6-review-commit.md` staging/commit。
+3. 若作者要求继续第三章，从 ch-0003 章纲/场景 brief 节点启动，并继续按 Looping Engineering 执行。
 
 ## ch-0001 节点图
 
@@ -55,7 +55,7 @@
 ## 账本镜像
 
 ```
-调度: { dispatch: 65, claude: 2, codex: 13, deepseek: 15, nvidia: 1, antigravity: 4, kiro: 7, gemini: 2, cursor: 7, ollama: 16, retry: 10, 方式A: 1, 手动CLI: 52, 兼任: 1, stand_in: 4, 作废: 7 }
+调度: { dispatch: 110, claude: 2, codex: 19, deepseek: 31, nvidia: 1, antigravity: 14, kiro: 14, gemini: 2, cursor: 8, ollama: 21, retry: 32, 方式A: 1, 手动CLI: 52, 兼任: 1, stand_in: 11, 作废: 25 }
 ```
 
 ## 最近历史
@@ -83,5 +83,13 @@
 - 2026-06-14 作者要求核验 `docs/审查意见.md` 并用 opencode DeepSeek Pro 重写第一章：Showrunner 裁定审查意见总体合理；`opencode/deepseek-v4-pro` 因 billing 失败，改用 `deepseek/deepseek-v4-pro`。prose r3 完成节奏重写；continuity r3 打回未登记判词「五行驳杂」；落 `ch-0001-prose.r4/revision-brief.md` 后 prose r4 删除该短语，continuity r4 pass，Cursor editorial r4 pass。注意：opencode r4 通道曾直接 edit `drafts/ch-0001.md`，Showrunner 已复核并保留仅两处预期改动。
 - 2026-06-14 ch-0001 pre-publish r4 pass：Cursor Agent 轻量复核通过；同步章文件/HANDOFF 至发布前 r4，并修正章纲“白天微温”漂移为夜间微温。
 - 2026-06-14 ch-0001 pre-publish r5 pass：核销 r4 的账本同步与章纲漂移 WARN；剩余 WARN 为 opencode r4 直写、stand_in 批准记录、归档快照旧地名，均不阻塞发布。
+- 2026-06-14 ch-0002 scene brief maker 完成：`plot-director@gpt` r1 因“禁执行命令”歧义返回 needs-world-ruling 作废；r2 明确“禁写不禁读”后输出三场新 brief（阿公不眠/茶与旧档/禁令上墙）到 `relay/ch-0002/ch-0002-scene-briefs.r1/out.r2.md`。brief checker 原定 Cursor Agent，r1/r2 均因 usage limit 失败；正式 `story/scenes/sc-0002-0x.md` 未替换，等待方式A Cursor 或作者批准异模型 checker stand-in。
+- 2026-06-14 作者批准 Kiro 作为 ch-0002 scene brief checker stand-in；`stand-in-editor@kiro` 审查 pass，报告落 `reviews/ch-0002.scene-briefs.editorial.r1.md`；三个正式 `story/scenes/sc-0002-01..03.md` 已由废弃旧版替换为新 brief。下一棒 `sc-0002-01-packs.r1`。
+- 2026-06-14 sc-0002-01 完成：Ollama/MiniMax 编包经 Showrunner 清理落 `context_packs/sc-0002-01.*`；沈砚@Codex 与阿公世界拍@DeepSeek 演绎 5 拍；Kiro L0 pass；GPT L1 pass；Ollama 工作态并入 `memory/working/ch-0002.md` r1。
+- 2026-06-14 sc-0002-02 完成：Ollama/MiniMax 编柯九包，经 Showrunner 清理隔离泄漏后落 `context_packs/sc-0002-02.ke-jiu.md`；柯九@Antigravity 与茶摊/旧档世界拍@DeepSeek 演绎 5 拍；b01 r1 提前自编线索作废、b01 r3 空输出作废、b04 r1 现实年号作废；Kiro L0 pass；GPT L1 pass；Ollama 工作态并入 `memory/working/ch-0002.md` r2。下一棒 `sc-0002-03-packs.r1`。
+- 2026-06-14 sc-0002-03 启动：Ollama/MiniMax 编沈砚/柯九包，经 Showrunner 清理隔离泄漏与旧砚连续性后落 `context_packs/sc-0002-03.*.md`；初始化 `transcripts/sc-0002-03.md`；Beat 1 禁令上墙世界拍@DeepSeek 经 r5 入场，r1“开封府/住处错误”、r2 越权写文件、r3 名单身份错误、r4 未登记生活史均作废并记录。下一棒 `sc-0002-03-b02-shen-yan.r1`。
+- 2026-06-14 sc-0002-03 完成：沈砚@Codex Beat 2/5，柯九@Antigravity Beat 3，世界拍@DeepSeek Beat 4；Beat 3 r1-r4 因空输出/字段格式/越权定案/错误道具作废，Beat 4 r1-r3 因越权日期/管理层信息/地点漂移作废；Kiro L0 r2 pass、Kiro L1 pass；Ollama 工作态并入 `memory/working/ch-0002.md` r3。下一棒 `ch-0002-prose.r1`。
+- 2026-06-14 ch-0002 正文与审核完成：DeepSeek Pro prose r1 因新增具体藏物位置/街角茶盏动作打回，r2 因柯九“跟了半条街”未演行为打回，r3 经 GPT continuity r1 打回“柯先生”称谓越界，prose r4 修正后落 `drafts/ch-0002.md`；continuity r2 pass；Cursor editorial 因 usage limit 失败，Kiro stand-in editorial r1 pass。
+- 2026-06-14 ch-0002 记忆与发布前自检完成：Ollama memory patch r1 卡住且 0-byte 输出中断，Kiro stand-in 生成 patch，经 Showrunner 修正旧砚随身状态后应用；memory verify r1 pass，`memory/working/ch-0002.md` 删除；Kiro stand-in pre-publish r1 pass。ch-0002 可提交，当前未 commit。
 
 created_by: showrunner@codex via codex-main · handoff-board
